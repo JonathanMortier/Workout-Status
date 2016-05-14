@@ -28,5 +28,11 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-client:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-servlet:9.3.2.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty.websocket:websocket-api:9.3.2.v20150730" level="project" />
+    <orderEntry type="library" name="Maven: com.sparkjava:spark-template-freemarker:2.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.freemarker:freemarker:2.3.19" level="project" />
+    <orderEntry type="library" name="Maven: org.postgresql:postgresql:9.4-1201-jdbc4" level="project" />
+    <orderEntry type="library" name="Maven: com.heroku.sdk:heroku-jdbc:0.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jscience:jscience:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.javolution:javolution:5.2.3" level="project" />
   </component>
 </module>
