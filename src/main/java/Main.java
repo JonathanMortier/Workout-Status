@@ -1,5 +1,8 @@
 import static spark.Spark.get;
 import static javax.measure.unit.SI.KILOGRAM;
+import static spark.Spark.port;
+import static spark.Spark.staticFileLocation;
+
 import javax.measure.quantity.Mass;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
@@ -10,6 +13,10 @@ import org.jscience.physics.amount.Amount;
 public class Main {
 
     public static void main(String[] args) {
+
+        port(Integer.valueOf(System.getenv("PORT")));
+        staticFileLocation("/public");
+
         get("/hello", (req, res) -> {
             RelativisticModel.select();
             Amount<Mass> m = Amount.valueOf("12 GeV").to(KILOGRAM);
