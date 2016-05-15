@@ -5,18 +5,27 @@ import static spark.Spark.staticFileLocation;
 
 import javax.measure.quantity.Mass;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.heroku.sdk.jdbc.DatabaseUrl;
+import feign.Feign;
+import feign.gson.GsonDecoder;
+import feign.gson.GsonEncoder;
+import fr.djmojo.workout.clients.UserClient;
+import fr.djmojo.workout.models.User;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +37,37 @@ public class Main {
 
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
+
+        get("/users", (req, res) -> {
+
+            List<User> clientList = new ArrayList<>();
+            User user = new User();
+
+            user.setFirstname("John");
+            user.setLastname("Doe");
+
+            clientList.add(user);
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<User>>() {
+            }.getType();
+
+            String json = gson.toJson(clientList, type);
+
+            return json;
+        });
+
+        get("/userClient", (req, res) -> {
+
+            UserClient client = Feign.builder()
+                    .decoder(new GsonDecoder())
+                    .encoder(new GsonEncoder())
+                    .target(UserClient.class, "http://workout-status.herokuapp.com/");
+
+            List<User> clientList = client.findAll();
+
+            return clientList.toString();
+
+        });
 
         get("/hello", (req, res) -> {
             RelativisticModel.select();
