@@ -13,6 +13,7 @@ import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import fr.djmojo.workout.clients.UserClient;
 import fr.djmojo.workout.models.User;
+import fr.djmojo.workout.servers.UserServer;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
 import spark.ModelAndView;
@@ -38,25 +39,9 @@ public class Main {
         port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
 
-        get("/users", (req, res) -> {
+        UserServer.launchServer();
 
-            List<User> clientList = new ArrayList<>();
-            User user = new User();
-
-            user.setFirstname("John");
-            user.setLastname("Doe");
-
-            clientList.add(user);
-            Gson gson = new Gson();
-            Type type = new TypeToken<List<User>>() {
-            }.getType();
-
-            String json = gson.toJson(clientList, type);
-
-            return json;
-        });
-
-        get("/userClient", (req, res) -> {
+        get("/", (req, res) -> {
 
             UserClient client = Feign.builder()
                     .decoder(new GsonDecoder())
@@ -65,9 +50,11 @@ public class Main {
 
             List<User> clientList = client.findAll();
 
-            return clientList.toString();
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("users", clientList);
+            return new ModelAndView(attributes, "listUser.ftl");
 
-        });
+        }, new FreeMarkerEngine());
 
         get("/hello", (req, res) -> {
             RelativisticModel.select();
