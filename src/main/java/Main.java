@@ -12,7 +12,11 @@ import feign.Feign;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import fr.djmojo.workout.clients.UserClient;
+import fr.djmojo.workout.database.MachineDAO;
+import fr.djmojo.workout.database.UserDAO;
+import fr.djmojo.workout.models.Machine;
 import fr.djmojo.workout.models.User;
+import fr.djmojo.workout.servers.MachineServer;
 import fr.djmojo.workout.servers.UserServer;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
@@ -40,32 +44,30 @@ public class Main {
         staticFileLocation("/public");
 
         UserServer.launchServer();
+        MachineServer.launchServer();
 
         get("/", (req, res) -> {
 
-            UserClient client = Feign.builder()
-                    .decoder(new GsonDecoder())
-                    .encoder(new GsonEncoder())
-                    .target(UserClient.class, "http://workout-status.herokuapp.com/");
-
-            List<User> clientList = client.findAll();
+            List<User> userList = UserDAO.getInstance().findAll();
+            List<Machine> machineList = MachineDAO.getInstance().findAll();
 
             Map<String, Object> attributes = new HashMap<>();
-            attributes.put("users", clientList);
-            return new ModelAndView(attributes, "listUser.ftl");
+            attributes.put("users", userList);
+            attributes.put("machines", machineList);
+            return new ModelAndView(attributes, "index.ftl");
 
         }, new FreeMarkerEngine());
 
-        get("/hello", (req, res) -> {
+        /*get("/hello", (req, res) -> {
             RelativisticModel.select();
 
             String energy = System.getenv().get("ENERGY");
 
             Amount<Mass> m = Amount.valueOf(energy).to(KILOGRAM);
             return "E=mc^2: " + energy + " = " + m.toString();
-        });
+        });*/
 
-        get("/db", (req, res) -> {
+        /*get("/db", (req, res) -> {
             Connection connection = null;
             Map<String, Object> attributes = new HashMap<>();
             try {
@@ -89,7 +91,7 @@ public class Main {
             } finally {
                 if (connection != null) try{connection.close();} catch(SQLException e){}
             }
-        }, new FreeMarkerEngine());
+        }, new FreeMarkerEngine());*/
     }
 
 }

@@ -105,12 +105,15 @@ public final class UserDAO {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(CREATE_TABLE);
 
-            stmt.executeUpdate("INSERT INTO " + TABLE_NAME + " " +
+            ResultSet rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME + " " +
                     "(" + LASTNAME + ", " + FIRSTNAME + ", " + MAIL + ", " + PASSWORD + ") " +
                     "VALUES ('" + user.getLastname() + "', '" + user.getFirstname()
-                    + "', '" + user.getMail() + "', '" + user.getPassword() + "')");
+                    + "', '" + user.getMail() + "', '" + user.getPassword() + "') RETURNING "+ID);
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM "+TABLE_NAME+" WHERE " + MAIL + " ='" + user.getMail() + "'");
+            rs.next();
+            String id = rs.getString(ID);
+
+            rs = stmt.executeQuery("SELECT * FROM "+TABLE_NAME+" WHERE " + ID + " ='" + id + "'");
 
             rs.next();
             userCreated = getUserFromResultSet(rs);

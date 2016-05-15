@@ -10,10 +10,10 @@
 
 <div class="container">
 
-    <h1>Liste des utilisateurs</h1>
+    <h1>Liste des Machines</h1>
     <ul>
-    <#list users as x>
-        <li><a href="/users/${x.id}">${x.firstname} ${x.lastname}</a></li>
+    <#list machines as x>
+        <li><a href="/machines/${x.id}">${x.name}</a></li>
     </#list>
     </ul>
 

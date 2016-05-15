@@ -11,17 +11,11 @@ public class User {
     private String mail;
     private String password;
 
-    // { "id": "1", "lastname" : "Mortier", "firstname" : "Jonathan", "mail" : "mortierjo@gmail.com", "password" : "AZERTY"}
-
     public User() {
     }
 
-    public User(UserPayload payload) {
-        this.id = payload.getId();
-        this.lastname = payload.getLastname();
-        this.firstname = payload.getFirstname();
-        this.mail = payload.getMail();
-        this.password = payload.getPassword();
+    public boolean isValid() {
+        return id!= null && !id.isEmpty();
     }
 
     @Override

@@ -50,15 +50,13 @@ public class UserServer {
         post("/users", (req, res) -> {
 
             ObjectMapper mapper = new ObjectMapper();
-            UserPayload userFromRequest = mapper.readValue(req.body(), UserPayload.class);
+            User user = mapper.readValue(req.body(), User.class);
 
-            if (!userFromRequest.isValid()) {
+            if (!user.isValid()) {
                 res.status(401);
                 return "";
             }
             res.status(200);
-
-            User user = new User(userFromRequest);
 
             User userBdd = UserDAO.getInstance().create(user);
 
