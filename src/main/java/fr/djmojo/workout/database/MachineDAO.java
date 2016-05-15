@@ -23,8 +23,8 @@ public final class MachineDAO implements MachineClient{
 
     private final Logger logger = LoggerFactory.getLogger(MachineDAO.class);
 
-    private static final String TABLE_NAME = "machine";
-    private static final String ID = "id";
+    public static final String TABLE_NAME = "machine";
+    public static final String ID = "id";
     private static final String NAME = "name";
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" (" +

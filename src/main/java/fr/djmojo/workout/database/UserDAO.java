@@ -21,8 +21,8 @@ public final class UserDAO {
 
     private final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 
-    private static final String TABLE_NAME  = "user_";
-    private static final String ID          = "id";
+    public static final String TABLE_NAME  = "user_";
+    public static final String ID          = "id";
     private static final String LASTNAME    = "lastname";
     private static final String FIRSTNAME   = "firstname";
     private static final String MAIL        = "mail";

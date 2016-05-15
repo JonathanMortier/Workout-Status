@@ -2,11 +2,8 @@ package fr.djmojo.workout.servers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-
-import com.google.gson.reflect.TypeToken;
 import fr.djmojo.workout.database.UserDAO;
 import fr.djmojo.workout.models.User;
-import fr.djmojo.workout.models.UserPayload;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 

@@ -18,6 +18,7 @@ import fr.djmojo.workout.models.Machine;
 import fr.djmojo.workout.models.User;
 import fr.djmojo.workout.servers.MachineServer;
 import fr.djmojo.workout.servers.UserServer;
+import fr.djmojo.workout.servers.WeightServer;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
 import spark.ModelAndView;
@@ -45,6 +46,7 @@ public class Main {
 
         UserServer.launchServer();
         MachineServer.launchServer();
+        WeightServer.launchServer();
 
         get("/", (req, res) -> {
 
