@@ -10,7 +10,7 @@ Micro services pour une app mobile permettant de savoir quel poids l'utilisateur
 
 **GET /users** --> Récupère l'ensemble des utilisateurs (OK)
 
-**GET /users/{userId} --> Récupère l'utilisateur ayant l'id en paramètre (OK)
+**GET /users/{userId}** --> Récupère l'utilisateur ayant l'id en paramètre (OK)
 
 **POST /users** --> Crée un user et renvoie le user (format JSON) (OK)
 
