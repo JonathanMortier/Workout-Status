@@ -84,7 +84,7 @@ public class WeightDAO implements WeightClient {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(CREATE_TABLE);
 
-            //TODO Détecter si le couple weight/machine existe déjà ou non.
+            //Détecter si le couple weight/machine existe déjà ou non.
             ResultSet rs;
             if (!weightMachineExist(weight)) {
                 //Si il n'existe pas, elle est passée à côtééé de moii
