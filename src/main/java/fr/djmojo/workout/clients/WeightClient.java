@@ -16,4 +16,7 @@ public interface WeightClient {
 
     @RequestLine("POST /weights")
     Weight createWeight(Weight weight);
+
+    @RequestLine("POST /weights/add/{mass}")
+    Weight addWeight(Weight weight, @Param("mass") int mass);
 }

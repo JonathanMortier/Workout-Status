@@ -10,6 +10,8 @@ import fr.djmojo.workout.models.User;
 import fr.djmojo.workout.models.Weight;
 import fr.djmojo.workout.view.MachineWeightView;
 import fr.djmojo.workout.view.UserView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -20,12 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.get;
+import static spark.Spark.halt;
 import static spark.Spark.post;
 
 /**
  * Created by DJMojo on 15/05/16.
  */
 public class WeightServer {
+
+    private static final Logger logger = LoggerFactory.getLogger(WeightServer.class);
 
     private static final Gson gson = new Gson();
     private static final Type WEIGHT_TYPE = Weight.class;
@@ -62,6 +67,50 @@ public class WeightServer {
 
             return gson.toJson(weight, WEIGHT_TYPE);
         });
+
+        get("/weights/:idUser/:idMachine/:mass", ((request, response) -> {
+
+            Weight weight = new Weight();
+            weight.setUserId(request.params(":idUser"));
+            weight.setMachineId(request.params(":idMachine"));
+
+            try {
+                int mass = Integer.parseInt(request.params(":mass"));
+                WeightDAO.getInstance().addWeight(weight, mass);
+
+            } catch (NumberFormatException e) {
+                logger.error("Mass [" + request.params(":mass") + "] invalid", e);
+                //TODO throw Content invalid
+                halt("400");
+            }
+            response.redirect("/weights/" + weight.getUserId());
+            return "";
+        }));
+
+        post("/weights/:mass", ((request, response) -> {
+
+            ObjectMapper mapper = new ObjectMapper();
+            Weight weight = mapper.readValue(request.body(), Weight.class);
+
+            if (!weight.isValid()) {
+                response.status(401);
+                return "";
+            }
+            response.status(200);
+
+            try {
+                int mass = Integer.parseInt(request.params(":mass"));
+                WeightDAO.getInstance().addWeight(weight, mass);
+
+            } catch (NumberFormatException e) {
+                logger.error("Mass [" + request.params(":mass") + "] invalid", e);
+                //TODO throw Content invalid
+                halt("400");
+            }
+            response.redirect("/weights/" + weight.getUserId());
+            return "";
+        }));
+
     }
 
     private static UserView prepareForUserView (User user, List<Machine> machineList, List<Weight> weightList) {

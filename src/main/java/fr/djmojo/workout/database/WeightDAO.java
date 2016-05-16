@@ -39,8 +39,14 @@ public class WeightDAO implements WeightClient {
     private static final String FIND_BY_USER_ID = "SELECT * FROM "+TABLE_NAME +
             " WHERE "+USER_ID +" = {}";
 
-    private static final String FIND_BY_USER_ID_MACHINE_ID = "SELECT count(*) as rowCount FROM "+TABLE_NAME +
+    private static final String EXIST_BY_USER_ID_MACHINE_ID = "SELECT count(*) as rowCount FROM "+TABLE_NAME +
             " WHERE "+USER_ID +" = {0} AND "+MACHINE_ID+" = {1}";
+
+    private static final String FIND_BY_USER_ID_MACHINE_ID = "SELECT * FROM "+TABLE_NAME +
+            " WHERE "+USER_ID +" = {0} AND "+MACHINE_ID+" = {1}";
+
+    private static final String UPDATE_WEIGHT_BY_USER_ID_MACHINE_ID = "UPDATE " + TABLE_NAME + " SET " + WEIGHT + " = "+WEIGHT+" + {2} " +
+            " WHERE " + USER_ID + " = {0} AND " + MACHINE_ID + " = {1} RETURNING *";
 
     private WeightDAO() {}
 
@@ -114,6 +120,51 @@ public class WeightDAO implements WeightClient {
 
     }
 
+    @Override
+    public Weight addWeight(Weight weight, @Param("mass") int mass) {
+
+        Weight updatedWeight = null;
+
+        if ( weightMachineExist(weight)) {
+
+            Connection connection = null;
+            try {
+                connection = DatabaseUrl.extract().getConnection();
+
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate(CREATE_TABLE);
+
+                String query = MessageFormat.format(UPDATE_WEIGHT_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId(), mass);
+
+                logger.warn("Query : " + query);
+
+                ResultSet rs = stmt.executeQuery(query);
+
+                rs.next();
+                updatedWeight = getWeightFromResultSet(rs);
+
+
+            } catch (Exception e) {
+                logger.error("Exception lors du weightDao.findByUserId en bdd", e);
+            } finally {
+                if (connection != null) {
+
+                    try{
+                        connection.close();
+                    }
+                    catch(SQLException e){
+                        logger.error("SQLException : ", e);
+                    }
+                }
+            }
+        }
+        else {
+            // Can't update a weight that doesn't exist
+            //TODO throws 404
+        }
+        return updatedWeight;
+    }
+
     private boolean weightMachineExist(Weight weight) {
 
         Connection connection = null;
@@ -124,7 +175,7 @@ public class WeightDAO implements WeightClient {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(CREATE_TABLE);
 
-            String query = MessageFormat.format(FIND_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId());
+            String query = MessageFormat.format(EXIST_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId());
 
             logger.warn("Query : " + query);
 

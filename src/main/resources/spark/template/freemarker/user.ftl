@@ -19,7 +19,9 @@
     <h2>Poids par machine (en kg)</h2>
     <ul>
         <#list userView.viewList as mw>
-            <li>${mw.machine.name} ${mw.weight.weight}</li>
+            <li>${mw.machine.name} ${mw.weight.weight} :
+                <a href="/weights/${userView.user.id}/${mw.machine.id}/-2">--</a>  <a href="/weights/${userView.user.id}/${mw.machine.id}/-1">-</a>
+                <a href="/weights/${userView.user.id}/${mw.machine.id}/1">+</a>  <a href="/weights/${userView.user.id}/${mw.machine.id}/2">++</a></li>
         </#list>
     </ul>
 
