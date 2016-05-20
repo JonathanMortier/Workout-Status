@@ -1,5 +1,15 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
+body {
+  font-size: 11px;
+}
+h2 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.navbar {
+  margin-bottom: 10px;
+}
 .navbar .menuTitle {
   display: none;
 }
@@ -23,9 +33,6 @@
   max-width: 75%;
   margin: 1em auto 2em;
 }
-.navbar + .jumbotron {
-  margin-top: -20px;
-}
 .jumbotron .lang-logo {
   display: block;
   background: #B01302;
@@ -39,6 +46,9 @@
 .jumbotron .lang-logo img {
   max-width: 100%;
 }
+.navbar + .jumbotron {
+  margin-top: -20px;
+}
 div.container ul.nav li span {
   margin-right: 5px;
 }
@@ -48,7 +58,6 @@ div.container ul.nav li span {
 .listButtons {
   display: none;
 }
-
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   .navbar .menuTitle {

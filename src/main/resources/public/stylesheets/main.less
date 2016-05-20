@@ -4,8 +4,19 @@
 /* Extra small devices (phones, less than 768px) */
 /* No media query since this is the default in Bootstrap */
 
-.navbar .menuTitle{
-  display: none;
+body {
+  font-size: 11px;
+}
+
+h2 {
+  margin-top:10px;
+  margin-bottom: 5px;
+}
+.navbar {
+  margin-bottom: 10px;
+   .menuTitle {
+     display: none;
+   }
 }
 
 .navbar-nav>li {
@@ -15,46 +26,53 @@
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-bottom: 80px; }
+  padding-bottom: 80px;
 
-.jumbotron .btn-primary {
-  background: #845ac7;
-  border-color: #845ac7; }
+  .btn-primary {
+    background: #845ac7;
+    border-color: #845ac7;
+  }
 
-.jumbotron .btn-primary:hover {
-  background: #7646c1; }
-.jumbotron p {
-  color: #d9ccee;
-  max-width: 75%;
-  margin: 1em auto 2em; }
+  .btn-primary:hover {
+    background: #7646c1;
+  }
+  p {
+    color: #d9ccee;
+    max-width: 75%;
+    margin: 1em auto 2em;
+  }
+
+  .lang-logo {
+    display: block;
+    background: #B01302;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border: 2px solid white;
+  }
+
+ .lang-logo img {
+    max-width: 100%;
+  }
+}
 
 .navbar + .jumbotron {
   margin-top: -20px; }
-
-.jumbotron .lang-logo {
-  display: block;
-  background: #B01302;
-  border-radius: 50%;
-  overflow: hidden;
-  width: 100px;
-  height: 100px;
-  margin: auto;
-  border: 2px solid white; }
-
-.jumbotron .lang-logo img {
-  max-width: 100%; }
 
 div.container ul.nav li span {
   margin-right : 5px;
 }
 
-button.btn.btn-sm {
-
-}
-
 #showUserDetails {
   display: none;
 }
+
+.listButtons {
+  display: none;
+}
+
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: @screen-sm-min) {
