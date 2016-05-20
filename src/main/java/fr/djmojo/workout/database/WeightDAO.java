@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Classe de gestion bdd de la table Weight
  * Created by DJMojo on 15/05/16.
  */
 public class WeightDAO implements WeightClient {
@@ -36,8 +37,9 @@ public class WeightDAO implements WeightClient {
             WEIGHT+ " INTEGER, " +
             "PRIMARY KEY ("+USER_ID+", "+MACHINE_ID+"))";
 
-    private static final String FIND_BY_USER_ID = "SELECT * FROM "+TABLE_NAME +
-            " WHERE "+USER_ID +" = {}";
+    private static final String FIND_BY_USER_ID = "SELECT "+TABLE_NAME+".* FROM "+TABLE_NAME + ", " + MachineDAO.TABLE_NAME +
+            " WHERE "+TABLE_NAME+"."+USER_ID +" = {0} AND "+TABLE_NAME+"."+MACHINE_ID + " = "+ MachineDAO.TABLE_NAME+"."+MachineDAO.ID+
+            " ORDER BY "+ MachineDAO.TABLE_NAME+"."+MachineDAO.NAME;
 
     private static final String EXIST_BY_USER_ID_MACHINE_ID = "SELECT count(*) as rowCount FROM "+TABLE_NAME +
             " WHERE "+USER_ID +" = {0} AND "+MACHINE_ID+" = {1}";
@@ -63,12 +65,13 @@ public class WeightDAO implements WeightClient {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs = stmt.executeQuery(FIND_BY_USER_ID.replace("{}", userId));
+            String query = MessageFormat.format(FIND_BY_USER_ID, userId);
+            logger.info("Query : "+query);
+            ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
                 weightList.add(getWeightFromResultSet(rs));
             }
-
 
         } catch (Exception e) {
             logger.error("Exception lors du weightDao.findByUserId en bdd", e);

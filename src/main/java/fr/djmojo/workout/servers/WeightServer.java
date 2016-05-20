@@ -26,6 +26,7 @@ import static spark.Spark.halt;
 import static spark.Spark.post;
 
 /**
+ * Le serveur exposant les url rest liés aux poids
  * Created by DJMojo on 15/05/16.
  */
 public class WeightServer {
