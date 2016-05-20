@@ -13,6 +13,7 @@ import fr.djmojo.workout.view.UserView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
+import spark.Request;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.lang.reflect.Type;
@@ -75,16 +76,8 @@ public class WeightServer {
             weight.setUserId(request.params(":idUser"));
             weight.setMachineId(request.params(":idMachine"));
 
-            try {
-                int mass = Integer.parseInt(request.params(":mass"));
-                WeightDAO.getInstance().addWeight(weight, mass);
-
-            } catch (NumberFormatException e) {
-                logger.error("Mass [" + request.params(":mass") + "] invalid", e);
-                //TODO throw Content invalid
-                halt("400");
-            }
-            response.redirect("/weights/" + weight.getUserId()+"#machine"+weight.getMachineId());
+            updateWeight(request, weight);
+            response.redirect("/weights/" + weight.getUserId());
             return "";
         }));
 
@@ -99,19 +92,24 @@ public class WeightServer {
             }
             response.status(200);
 
-            try {
-                int mass = Integer.parseInt(request.params(":mass"));
-                WeightDAO.getInstance().addWeight(weight, mass);
+            updateWeight(request, weight);
 
-            } catch (NumberFormatException e) {
-                logger.error("Mass [" + request.params(":mass") + "] invalid", e);
-                //TODO throw Content invalid
-                halt("400");
-            }
             response.redirect("/weights/" + weight.getUserId());
             return "";
         }));
 
+    }
+
+    private  static void updateWeight(Request request, Weight weight) {
+        try {
+            int mass = Integer.parseInt(request.params(":mass"));
+            WeightDAO.getInstance().addWeight(weight, mass);
+
+        } catch (NumberFormatException e) {
+            logger.error("Mass [" + request.params(":mass") + "] invalid", e);
+            //TODO throw Content invalid
+            halt("400");
+        }
     }
 
     private static UserView prepareForUserView (User user, List<Machine> machineList, List<Weight> weightList) {
