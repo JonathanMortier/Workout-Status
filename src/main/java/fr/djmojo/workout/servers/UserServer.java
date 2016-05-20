@@ -41,6 +41,11 @@ public class UserServer {
 
             User user = UserDAO.getInstance().findById(request.params(":id"));
 
+            if (user == null) {
+                response.status(404);
+                return "";
+            }
+
             return gson.toJson(user, USER_TYPE);
         });
 
@@ -55,10 +60,19 @@ public class UserServer {
             }
             res.status(200);
 
-            User userBdd = UserDAO.getInstance().create(user);
+            User userBdd = UserDAO.getInstance().createUser(user);
 
             return gson.toJson(userBdd, USER_TYPE);
         });
 
+        post("/users/:id", (request, response) -> {
+
+            ObjectMapper mapper = new ObjectMapper();
+            User user = mapper.readValue(request.body(), User.class);
+
+            user = UserDAO.getInstance().updateUser(request.params(":id"), user);
+
+            return gson.toJson(user, USER_TYPE);
+        });
     }
 }

@@ -20,4 +20,7 @@ public interface UserClient {
     @RequestLine("POST /users")
     User createUser(User user);
 
+    @RequestLine("POST /users/{id}")
+    User updateUser(@Param("id") String id, User user);
+
 }
