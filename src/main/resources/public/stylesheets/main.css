@@ -45,6 +45,10 @@ div.container ul.nav li span {
 #showUserDetails {
   display: none;
 }
+.listButtons {
+  display: none;
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
   .navbar .menuTitle {

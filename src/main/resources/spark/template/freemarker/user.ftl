@@ -36,10 +36,14 @@
                                 <td>${mw.machine.name}</td>
                                 <td>${mw.weight.weight}</td>
                                 <td>
-                                    <a href="/weights/${userView.user.id}/${mw.machine.id}/-2"><button type="button" class="btn btn-sm btn-danger">--</button></a>
-                                    <a href="/weights/${userView.user.id}/${mw.machine.id}/-1"><button type="button" class="btn btn-sm btn-danger">-</button></a>
-                                    <a href="/weights/${userView.user.id}/${mw.machine.id}/1"><button type="button" class="btn btn-sm btn-success">+</button></a>
-                                    <a href="/weights/${userView.user.id}/${mw.machine.id}/2"><button type="button" class="btn btn-sm btn-success">++</button></a>
+                                    <button id="updateButton${mw.machine.id}" type="button" class="btn btn-sm btn-primary" onclick="showButtons(${mw.machine.id});">Update</button>
+                                    <div id="listButtons${mw.machine.id}" class="listButtons">
+                                        <a href="/weights/${userView.user.id}/${mw.machine.id}/-2"><button type="button" class="btn btn-sm btn-danger">--</button></a>
+                                        <a href="/weights/${userView.user.id}/${mw.machine.id}/-1"><button type="button" class="btn btn-sm btn-danger">-</button></a>
+                                        <a href="/weights/${userView.user.id}/${mw.machine.id}/1"><button type="button" class="btn btn-sm btn-success">+</button></a>
+                                        <a href="/weights/${userView.user.id}/${mw.machine.id}/2"><button type="button" class="btn btn-sm btn-success">++</button></a>
+                                        <button type="button" id="lock${mw.machine.id}" class="btn btn-sm btn-primary" onclick="hideButtons(${mw.machine.id});">Lock</button>
+                                    </div>
                                 </td>
                             </tr>
                         </#list>
