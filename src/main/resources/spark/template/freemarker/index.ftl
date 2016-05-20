@@ -8,25 +8,11 @@
 
   <#include "nav.ftl">
 
-<div class="jumbotron text-center">
-  <div class="container">
-    <a href="/" class="lang-logo">
-      <img src="/lang-logo.png">
-    </a>
-  </div>
-</div>
 <div class="container">
-  <h1>Liste des Machines</h1>
-  <ul>
-  <#list machines as x>
-      <li><a href="/machines/${x.id}">${x.name}</a></li>
-  </#list>
-  </ul>
-
   <h1>Liste des utilisateurs</h1>
   <ul>
   <#list users as x>
-      <li><a href="/users/${x.id}">${x.firstname} ${x.lastname}</a></li>
+      <li><a href="/weights/${x.id}">${x.firstname} ${x.lastname}</a></li>
   </#list>
   </ul>
   <hr>

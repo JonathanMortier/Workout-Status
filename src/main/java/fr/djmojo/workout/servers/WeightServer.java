@@ -83,7 +83,7 @@ public class WeightServer {
                 //TODO throw Content invalid
                 halt("400");
             }
-            response.redirect("/weights/" + weight.getUserId());
+            response.redirect("/weights/" + weight.getUserId()+"#machine"+weight.getMachineId());
             return "";
         }));
 
