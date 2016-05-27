@@ -68,9 +68,11 @@ public class Main {
             String mail = req.attribute("mail");
             String password = req.attribute("password");
 
+            Map<String, String > params = req.params();
+
             System.out.println("mail "+mail);
             System.out.println("password "+password);
-
+            System.out.println("params : " + params);
             String userIdFound = "2";
 
             User user = UserDAO.getInstance().findById(userIdFound);
