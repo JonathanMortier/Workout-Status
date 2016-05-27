@@ -1,6 +1,7 @@
 package fr.djmojo.workout.database;
 
 import com.heroku.sdk.jdbc.DatabaseUrl;
+import feign.Param;
 import fr.djmojo.workout.clients.UserClient;
 import fr.djmojo.workout.models.User;
 import org.slf4j.Logger;
@@ -40,6 +41,9 @@ public final class UserDAO implements UserClient {
 
     private static final String FIND_BY_ID = "SELECT * FROM "+TABLE_NAME +
             " WHERE "+ID+" = {0}";
+
+    private static final String FIND_BY_MAIL_PWD = "SELECT * FROM "+TABLE_NAME +
+            " WHERE "+MAIL+" = {0} AND "+PASSWORD+" = {1}";
 
     private static final String UPDATE_BY_ID = "UPDATE "+TABLE_NAME+" SET "+
             LASTNAME+"={0}, "+FIRSTNAME+"={1}, "+MAIL+"={2}, "+PASSWORD+"={3} " +
@@ -138,6 +142,39 @@ public final class UserDAO implements UserClient {
 
         } catch (Exception e) {
             logger.error("Exception lors du userdto.updateUser("+id+") en bdd", e);
+        } finally {
+            if (connection != null) try{connection.close();} catch(SQLException e){}
+        }
+        return user;
+    }
+
+    @Override
+    public User connectUser(String mail, String password) {
+
+        Connection connection = null;
+        User user = null;
+        try {
+            connection = DatabaseUrl.extract().getConnection();
+
+            Statement stmt = connection.createStatement();
+            stmt.executeUpdate(CREATE_TABLE);
+
+            String query = MessageFormat.format(FIND_BY_MAIL_PWD, "'"+mail+"'", "'"+password+"'");
+
+            System.out.println("query : "+query);
+
+            ResultSet rs = stmt.executeQuery(query);
+            boolean hasNext = rs.next();
+
+            if (hasNext) {
+                user = getUserFromResultSet(rs);
+            }
+            else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            logger.error("Exception lors du userdto.connectUser("+mail+") en bdd", e);
         } finally {
             if (connection != null) try{connection.close();} catch(SQLException e){}
         }

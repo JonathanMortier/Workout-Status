@@ -23,4 +23,6 @@ public interface UserClient {
     @RequestLine("POST /users/{id}")
     User updateUser(@Param("id") String id, User user);
 
+    @RequestLine("POST /users/connection")
+    User connectUser(String mail, String password);
 }

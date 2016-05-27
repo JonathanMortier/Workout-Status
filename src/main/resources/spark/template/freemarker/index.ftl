@@ -10,26 +10,24 @@
 
 <div class="container">
   <h1>Connexion</h1>
-  <ul>
-      <form method="post">
-        <div>
-          <label>
-              <strong>Please enter your email address: </strong>
-              <input type="text" name="mail"/>
-          </label>
-          </div>
-        <div>
-          <label>
-              <strong>Please enter your password: </strong>
-              <input type="password" name="password"/>
-          </label>
+    <form method=POST action="/users/connection">
+      <div>
+        <label>
+            <strong>Mail : </strong>
+            <input id="mail" type="text" name="mail" placeholder="Mail"/>
+        </label>
         </div>
-        <div>
-          <input type="submit" value="Submit">
-          <input type="reset" value="Reset">
-        </div>
-      </form>
-  </ul>
+      <div>
+        <label>
+            <strong>Password: </strong>
+            <input id="password" type="password" name="password"/>
+        </label>
+      </div>
+      <div>
+        <input type="submit" value="Connexion">
+        <input type="reset" value="Reset">
+      </div>
+    </form>
   <hr>
   <div class="row">
     <div class="col-md-6">

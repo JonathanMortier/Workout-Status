@@ -13,7 +13,7 @@
     <h1>Liste des utilisateurs</h1>
     <ul>
     <#list users as x>
-        <li><a href="/users/${x.id}">${x.firstname} ${x.lastname}</a></li>
+        <li><a href="/weights/${x.id}">${x.firstname} ${x.lastname}</a></li>
     </#list>
     </ul>
 

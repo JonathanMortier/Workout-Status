@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
 import spark.Request;
+import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.lang.reflect.Type;
@@ -41,17 +42,33 @@ public class WeightServer {
 
         get("/weights/:userId", (req, res) -> {
 
-            List<Weight> weightList = new ArrayList<>();
+            String userIdParam = req.params(":userId");
+            Session session = req.session();
+            String isConnected = session.attribute("CONNECTED");
+            String userId = session.attribute("UserID");
+            System.out.println("isConnected : " + isConnected);
 
-            User user = UserDAO.getInstance().findById(req.params(":userId"));
-            List<Machine> machineList = MachineDAO.getInstance().findAll();
-            weightList = WeightDAO.getInstance().findByUserId(req.params(":userId"));
+            System.out.println("header list : "+req.headers());
 
-            UserView userView = prepareForUserView(user, machineList, weightList);
+            if ( "true".equals(isConnected) && userId.equals(userIdParam)) {
+                List<Weight> weightList = new ArrayList<>();
 
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("userView", userView);
-            return new ModelAndView(attributes, "user.ftl");
+                User user = UserDAO.getInstance().findById(userIdParam);
+                List<Machine> machineList = MachineDAO.getInstance().findAll();
+                weightList = WeightDAO.getInstance().findByUserId(userIdParam);
+
+                UserView userView = prepareForUserView(user, machineList, weightList);
+
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("userView", userView);
+                return new ModelAndView(attributes, "user.ftl");
+            }
+            else{
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("message", "Vous n'êtes pas connecté");
+                return new ModelAndView(attributes, "error.ftl");
+            }
+
         }, new FreeMarkerEngine());
 
         post("/weights", (req, res) -> {
