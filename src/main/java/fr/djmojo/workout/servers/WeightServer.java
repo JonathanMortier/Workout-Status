@@ -100,7 +100,7 @@ public class WeightServer {
 
     }
 
-    private  static void updateWeight(Request request, Weight weight) {
+    private static void updateWeight(Request request, Weight weight) {
         try {
             int mass = Integer.parseInt(request.params(":mass"));
             WeightDAO.getInstance().addWeight(weight, mass);
@@ -112,7 +112,7 @@ public class WeightServer {
         }
     }
 
-    private static UserView prepareForUserView (User user, List<Machine> machineList, List<Weight> weightList) {
+    public static UserView prepareForUserView (User user, List<Machine> machineList, List<Weight> weightList) {
 
         UserView userView = new UserView();
         userView.setUser(user);

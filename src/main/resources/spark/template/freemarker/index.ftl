@@ -9,11 +9,26 @@
   <#include "nav.ftl">
 
 <div class="container">
-  <h1>Liste des utilisateurs</h1>
+  <h1>Connexion</h1>
   <ul>
-  <#list users as x>
-      <li><a href="/weights/${x.id}">${x.firstname} ${x.lastname}</a></li>
-  </#list>
+      <form method="post">
+        <div>
+          <label>
+              <strong>Please enter your email address: </strong>
+              <input type="text" name="mail"/>
+          </label>
+          </div>
+        <div>
+          <label>
+              <strong>Please enter your password: </strong>
+              <input type="password" name="password"/>
+          </label>
+        </div>
+        <div>
+          <input type="submit" value="Submit">
+          <input type="reset" value="Reset">
+        </div>
+      </form>
   </ul>
   <hr>
   <div class="row">

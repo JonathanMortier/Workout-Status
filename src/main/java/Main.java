@@ -1,10 +1,9 @@
-import static spark.Spark.get;
 import static javax.measure.unit.SI.KILOGRAM;
-import static spark.Spark.port;
-import static spark.Spark.staticFileLocation;
+import static spark.Spark.*;
 
 import javax.measure.quantity.Mass;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.heroku.sdk.jdbc.DatabaseUrl;
@@ -14,11 +13,14 @@ import feign.gson.GsonEncoder;
 import fr.djmojo.workout.clients.UserClient;
 import fr.djmojo.workout.database.MachineDAO;
 import fr.djmojo.workout.database.UserDAO;
+import fr.djmojo.workout.database.WeightDAO;
 import fr.djmojo.workout.models.Machine;
 import fr.djmojo.workout.models.User;
+import fr.djmojo.workout.models.Weight;
 import fr.djmojo.workout.servers.MachineServer;
 import fr.djmojo.workout.servers.UserServer;
 import fr.djmojo.workout.servers.WeightServer;
+import fr.djmojo.workout.view.UserView;
 import org.jscience.physics.model.RelativisticModel;
 import org.jscience.physics.amount.Amount;
 import spark.ModelAndView;
@@ -57,6 +59,29 @@ public class Main {
             attributes.put("users", userList);
             attributes.put("machines", machineList);
             return new ModelAndView(attributes, "index.ftl");
+
+        }, new FreeMarkerEngine());
+
+        post("/", (req, res) -> {
+
+            ObjectMapper mapper = new ObjectMapper();
+            String mail = req.attribute("mail");
+            String password = req.attribute("password");
+
+            System.out.println("mail "+mail);
+            System.out.println("password "+password);
+
+            String userIdFound = "2";
+
+            User user = UserDAO.getInstance().findById(userIdFound);
+            List<Machine> machineList = MachineDAO.getInstance().findAll();
+            List<Weight> weightList = WeightDAO.getInstance().findByUserId(userIdFound);
+
+            UserView userView = WeightServer.prepareForUserView(user, machineList, weightList);
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("userView", userView);
+            return new ModelAndView(attributes, "user.ftl");
 
         }, new FreeMarkerEngine());
 
