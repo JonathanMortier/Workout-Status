@@ -1,16 +1,7 @@
-import static javax.measure.unit.SI.KILOGRAM;
 import static spark.Spark.*;
 
-import javax.measure.quantity.Mass;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.heroku.sdk.jdbc.DatabaseUrl;
-import feign.Feign;
-import feign.gson.GsonDecoder;
-import feign.gson.GsonEncoder;
-import fr.djmojo.workout.clients.UserClient;
+
 import fr.djmojo.workout.database.MachineDAO;
 import fr.djmojo.workout.database.UserDAO;
 import fr.djmojo.workout.database.WeightDAO;
@@ -21,17 +12,9 @@ import fr.djmojo.workout.servers.MachineServer;
 import fr.djmojo.workout.servers.UserServer;
 import fr.djmojo.workout.servers.WeightServer;
 import fr.djmojo.workout.view.UserView;
-import org.jscience.physics.model.RelativisticModel;
-import org.jscience.physics.amount.Amount;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        port(Integer.valueOf(System.getenv("PORT")));
+        port(Integer.valueOf(System.getProperty("server.port")));
         staticFileLocation("/public");
 
         UserServer.launchServer();

@@ -1,6 +1,5 @@
 package fr.djmojo.workout.view;
 
-import fr.djmojo.workout.models.Machine;
 import fr.djmojo.workout.models.User;
 
 import java.util.ArrayList;

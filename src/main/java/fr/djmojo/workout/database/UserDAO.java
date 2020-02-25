@@ -1,7 +1,6 @@
 package fr.djmojo.workout.database;
 
 import com.heroku.sdk.jdbc.DatabaseUrl;
-import feign.Param;
 import fr.djmojo.workout.clients.UserClient;
 import fr.djmojo.workout.models.User;
 import org.slf4j.Logger;
