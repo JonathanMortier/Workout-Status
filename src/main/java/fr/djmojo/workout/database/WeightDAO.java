@@ -61,21 +61,24 @@ public class WeightDAO implements WeightClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            String query = MessageFormat.format(FIND_BY_USER_ID, userId);
-            logger.info("Query : "+query);
-            ResultSet rs = stmt.executeQuery(query);
+                String query = MessageFormat.format(FIND_BY_USER_ID, userId);
+                rs = stmt.executeQuery(query);
 
-            while (rs.next()) {
-                weightList.add(getWeightFromResultSet(rs));
+                while (rs.next()) {
+                    weightList.add(getWeightFromResultSet(rs));
+                }
             }
 
         } catch (Exception e) {
             logger.error("Exception lors du weightDao.findByUserId en bdd", e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
 
         return weightList;
@@ -89,33 +92,35 @@ public class WeightDAO implements WeightClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
-
-            //Détecter si le couple weight/machine existe déjà ou non.
             ResultSet rs;
-            if (!weightMachineExist(weight)) {
-                //Si il n'existe pas, elle est passée à côtééé de moii
-                rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME +
-                        " (" + USER_ID + ", " + MACHINE_ID + ", " + WEIGHT + ") " +
-                        "VALUES ('" + weight.getUserId() + "', " + weight.getMachineId() + ", " +
-                        "" + weight.getWeight() + ") RETURNING *");
-            }
-            else {
-                //Il existe, on fait un update
-                rs = stmt.executeQuery("UPDATE " + TABLE_NAME + " SET " + WEIGHT + " = " + weight.getWeight() +
-                        " WHERE " + USER_ID + " = " + weight.getUserId() + " AND " + MACHINE_ID + " = " + weight.getMachineId() + "RETURNING *");
-            }
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            rs.next();
+                //Détecter si le couple weight/machine existe déjà ou non.
+                if (!weightMachineExist(weight)) {
+                    //Si il n'existe pas, elle est passée à côtééé de moii
+                    rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME +
+                            " (" + USER_ID + ", " + MACHINE_ID + ", " + WEIGHT + ") " +
+                            "VALUES ('" + weight.getUserId() + "', " + weight.getMachineId() + ", " +
+                            "" + weight.getWeight() + ") RETURNING *");
+                } else {
+                    //Il existe, on fait un update
+                    rs = stmt.executeQuery("UPDATE " + TABLE_NAME + " SET " + WEIGHT + " = " + weight.getWeight() +
+                            " WHERE " + USER_ID + " = " + weight.getUserId() + " AND " + MACHINE_ID + " = " + weight.getMachineId() + "RETURNING *");
+                }
 
-            weightCreated = getWeightFromResultSet(rs);
+                rs.next();
+
+                weightCreated = getWeightFromResultSet(rs);
+            }
 
         } catch (Exception e) {
             logger.error("Exception lors du weightDao.createWeight en bdd", e);
 
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return weightCreated;
 
@@ -133,29 +138,27 @@ public class WeightDAO implements WeightClient {
             try {
                 connection = DatabaseUrl.extract().getConnection();
 
-                Statement stmt = connection.createStatement();
-                stmt.executeUpdate(CREATE_TABLE);
+                ResultSet rs;
+                try (Statement stmt = connection.createStatement()) {
+                    stmt.executeUpdate(CREATE_TABLE);
 
-                String query = MessageFormat.format(UPDATE_WEIGHT_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId(), mass);
+                    String query = MessageFormat.format(UPDATE_WEIGHT_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId(), mass);
 
-                logger.warn("Query : " + query);
+                    rs = stmt.executeQuery(query);
 
-                ResultSet rs = stmt.executeQuery(query);
-
-                rs.next();
-                updatedWeight = getWeightFromResultSet(rs);
-
+                    rs.next();
+                    updatedWeight = getWeightFromResultSet(rs);
+                }
 
             } catch (Exception e) {
                 logger.error("Exception lors du weightDao.findByUserId en bdd", e);
             } finally {
                 if (connection != null) {
-
                     try{
                         connection.close();
                     }
                     catch(SQLException e){
-                        logger.error("SQLException : ", e);
+                        logger.error("Exception lors de la cloture de la connexion", e);
                     }
                 }
             }
@@ -174,21 +177,20 @@ public class WeightDAO implements WeightClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            String query = MessageFormat.format(EXIST_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId());
+                String query = MessageFormat.format(EXIST_BY_USER_ID_MACHINE_ID, weight.getUserId(), weight.getMachineId());
 
-            logger.warn("Query : " + query);
+                rs = stmt.executeQuery(query);
 
-            ResultSet rs = stmt.executeQuery(query);
+                rs.next();
 
-            rs.next();
-
-            int count = rs.getInt("rowCount");
-            logger.info("Count(*) = "+ count);
-            if (count == 1) {
-                return true;
+                int count = rs.getInt("rowCount");
+                if (count == 1) {
+                    return true;
+                }
             }
 
         } catch (Exception e) {
@@ -199,13 +201,11 @@ public class WeightDAO implements WeightClient {
                     connection.close();
                 }
                 catch(SQLException e){
-                    logger.error("SQLException : ", e);
+                    logger.error("Exception lors de la cloture de la connexion", e);
                 }
         }
 
         return false;
-
-
     }
 
     private Weight getWeightFromResultSet(ResultSet rs) throws SQLException {

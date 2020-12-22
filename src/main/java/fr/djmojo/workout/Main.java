@@ -1,4 +1,5 @@
-import com.fasterxml.jackson.databind.ObjectMapper;
+package fr.djmojo.workout;
+
 import fr.djmojo.workout.database.MachineDAO;
 import fr.djmojo.workout.database.UserDAO;
 import fr.djmojo.workout.database.WeightDAO;
@@ -28,7 +29,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        port(Integer.valueOf(System.getenv("PORT")));
+        port(Integer.parseInt(System.getenv("PORT")));
         staticFileLocation("/public");
 
         UserServer.launchServer();
@@ -47,17 +48,8 @@ public class Main {
 
         }, new FreeMarkerEngine());
 
-        post("/", (req, res) -> {
+        /*post("/", (req, res) -> {
 
-            ObjectMapper mapper = new ObjectMapper();
-            String mail = req.attribute("mail");
-            String password = req.attribute("password");
-
-            Map<String, String > params = req.params();
-
-            System.out.println("mail "+mail);
-            System.out.println("password "+password);
-            System.out.println("params : " + params);
             String userIdFound = "2";
 
             User user = UserDAO.getInstance().findById(userIdFound);
@@ -70,42 +62,8 @@ public class Main {
             attributes.put("userView", userView);
             return new ModelAndView(attributes, "user.ftl");
 
-        }, new FreeMarkerEngine());
-
-        /*get("/hello", (req, res) -> {
-            RelativisticModel.select();
-
-            String energy = System.getenv().get("ENERGY");
-
-            Amount<Mass> m = Amount.valueOf(energy).to(KILOGRAM);
-            return "E=mc^2: " + energy + " = " + m.toString();
-        });*/
-
-        /*get("/db", (req, res) -> {
-            Connection connection = null;
-            Map<String, Object> attributes = new HashMap<>();
-            try {
-                connection = DatabaseUrl.extract().getConnection();
-
-                Statement stmt = connection.createStatement();
-                stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
-                stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
-                ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
-
-                ArrayList<String> output = new ArrayList<String>();
-                while (rs.next()) {
-                    output.add( "Read from DB: " + rs.getTimestamp("tick"));
-                }
-
-                attributes.put("results", output);
-                return new ModelAndView(attributes, "db.ftl");
-            } catch (Exception e) {
-                attributes.put("message", "There was an error: " + e);
-                return new ModelAndView(attributes, "error.ftl");
-            } finally {
-                if (connection != null) try{connection.close();} catch(SQLException e){}
-            }
         }, new FreeMarkerEngine());*/
+
     }
 
 }

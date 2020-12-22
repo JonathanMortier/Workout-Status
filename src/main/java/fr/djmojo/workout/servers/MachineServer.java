@@ -8,7 +8,6 @@ import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,11 +23,13 @@ public class MachineServer {
     private static final Gson gson = new Gson();
     private static final Type MACHINE_TYPE = Machine.class;
 
+    private MachineServer () {}
+
     public static void launchServer() {
 
         get("/machines", (req, res) -> {
 
-            List<Machine> machineList = new ArrayList<>();
+            List<Machine> machineList;
 
             machineList = MachineDAO.getInstance().findAll();
 
@@ -55,9 +56,9 @@ public class MachineServer {
             }
             res.status(200);
 
-            Machine Machine = MachineDAO.getInstance().createMachine(machineFromRequest);
+            Machine machine = MachineDAO.getInstance().createMachine(machineFromRequest);
 
-            return gson.toJson(Machine, MACHINE_TYPE);
+            return gson.toJson(machine, MACHINE_TYPE);
         });
 
     }

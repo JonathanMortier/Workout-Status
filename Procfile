@@ -1,1 +1,1 @@
-web:    java -jar target/workout-status-1.0-SNAPSHOT-jar-with-dependencies.jar
+web:    java -jar target/workout-status-1.1-SNAPSHOT-jar-with-dependencies.jar

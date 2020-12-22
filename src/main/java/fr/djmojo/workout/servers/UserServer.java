@@ -10,7 +10,6 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,13 @@ public class UserServer {
     private static final Gson gson = new Gson();
     private static final Type USER_TYPE = User.class;
 
+    private UserServer () {}
+
     public static void launchServer() {
 
         get("/users", (req, res) -> {
 
-            List<User> clientList = new ArrayList<>();
+            List<User> clientList;
 
             clientList = UserDAO.getInstance().findAll();
 
@@ -76,9 +77,6 @@ public class UserServer {
 
             mail = URLDecoder.decode(mail, "UTF-8");
             password = URLDecoder.decode(password, "UTF-8");
-
-            System.out.println("mail : " + mail);
-            System.out.println("password : " + password);
 
             User user = UserDAO.getInstance().connectUser(mail, password);
 

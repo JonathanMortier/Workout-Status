@@ -62,20 +62,23 @@ public final class UserDAO implements UserClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs = stmt.executeQuery("SELECT * FROM "+TABLE_NAME);
+                rs = stmt.executeQuery("SELECT * FROM " + TABLE_NAME);
 
-            while (rs.next()) {
-                userList.add(getUserFromResultSet(rs));
+                while (rs.next()) {
+                    userList.add(getUserFromResultSet(rs));
+                }
             }
-
 
         } catch (Exception e) {
             logger.error("Exception lors du userdto.findAll en bdd", e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return userList;
     }
@@ -88,25 +91,30 @@ public final class UserDAO implements UserClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            String query = MessageFormat.format(FIND_BY_ID, id);
+                String query = MessageFormat.format(FIND_BY_ID, id);
 
-            ResultSet rs = stmt.executeQuery(query);
-            boolean hasNext = rs.next();
+                rs = stmt.executeQuery(query);
 
-            if (hasNext) {
-                user = getUserFromResultSet(rs);
-            }
-            else {
-                return null;
+                boolean hasNext = rs.next();
+
+                if (hasNext) {
+                    user = getUserFromResultSet(rs);
+                }
+                else {
+                    return null;
+                }
             }
 
         } catch (Exception e) {
-            logger.error("Exception lors du userdto.findById("+id+") en bdd", e);
+            logger.error(String.format("Exception lors du userdto.findById(%s) en bdd", id), e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return user;
 
@@ -120,29 +128,31 @@ public final class UserDAO implements UserClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            User userFound;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            User userFound = getInstance().findById(id);
+                userFound = getInstance().findById(id);
 
-            if (userFound == null) {
-                return null;
+                if (userFound == null) {
+                    return null;
+                }
+
+                String query = MessageFormat.format(UPDATE_BY_ID, addQuotes(user.getLastname()),
+                        addQuotes(user.getFirstname()), addQuotes(user.getMail()),
+                        addQuotes(user.getPassword()), user.getId());
+
+                stmt.executeUpdate(query);
             }
-
-            String query = MessageFormat.format(UPDATE_BY_ID, addQuotes(user.getLastname()),
-                    addQuotes(user.getFirstname()), addQuotes(user.getMail()),
-                    addQuotes(user.getPassword()), user.getId());
-
-            logger.info("Query : "+query);
-
-            stmt.executeUpdate(query);
 
             user.setId(userFound.getId());
 
         } catch (Exception e) {
-            logger.error("Exception lors du userdto.updateUser("+id+") en bdd", e);
+            logger.error(String.format("Exception lors du userdto.updateUser(%s) en bdd", id),  e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return user;
     }
@@ -155,27 +165,28 @@ public final class UserDAO implements UserClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            String query = MessageFormat.format(FIND_BY_MAIL_PWD, "'"+mail+"'", "'"+password+"'");
+                String query = MessageFormat.format(FIND_BY_MAIL_PWD, "'" + mail + "'", "'" + password + "'");
 
-            System.out.println("query : "+query);
+                rs = stmt.executeQuery(query);
 
-            ResultSet rs = stmt.executeQuery(query);
-            boolean hasNext = rs.next();
-
-            if (hasNext) {
-                user = getUserFromResultSet(rs);
-            }
-            else {
-                return null;
+                if (rs.next()) {
+                    user = getUserFromResultSet(rs);
+                }
+                else {
+                    return null;
+                }
             }
 
         } catch (Exception e) {
-            logger.error("Exception lors du userdto.connectUser("+mail+") en bdd", e);
+            logger.error(String.format("Exception lors du userdto.connectUser(%s) en bdd", mail), e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return user;
     }
@@ -188,27 +199,31 @@ public final class UserDAO implements UserClient {
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME + " " +
-                    "(" + LASTNAME + ", " + FIRSTNAME + ", " + MAIL + ", " + PASSWORD + ") " +
-                    "VALUES ('" + user.getLastname() + "', '" + user.getFirstname()
-                    + "', '" + user.getMail() + "', '" + user.getPassword() + "') RETURNING "+ID);
+                rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME + " " +
+                        "(" + LASTNAME + ", " + FIRSTNAME + ", " + MAIL + ", " + PASSWORD + ") " +
+                        "VALUES ('" + user.getLastname() + "', '" + user.getFirstname()
+                        + "', '" + user.getMail() + "', '" + user.getPassword() + "') RETURNING " + ID);
 
-            rs.next();
-            String id = rs.getString(ID);
+                rs.next();
+                String id = rs.getString(ID);
 
-            rs = stmt.executeQuery("SELECT * FROM "+TABLE_NAME+" WHERE " + ID + " ='" + id + "'");
+                rs = stmt.executeQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " ='" + id + "'");
 
-            rs.next();
-            userCreated = getUserFromResultSet(rs);
+                rs.next();
+                userCreated = getUserFromResultSet(rs);
+            }
 
         } catch (Exception e) {
             logger.error("Exception lors du userdto.findAll en bdd", e);
 
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return userCreated;
     }

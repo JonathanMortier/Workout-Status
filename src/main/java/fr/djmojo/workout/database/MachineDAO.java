@@ -49,20 +49,23 @@ public final class MachineDAO implements MachineClient{
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs = stmt.executeQuery(FIND_ALL_ORDER_BY.replace("{}", NAME));
+                rs = stmt.executeQuery(FIND_ALL_ORDER_BY.replace("{}", NAME));
 
-            while (rs.next()) {
-                machineList.add(getMachineFromResultSet(rs));
+                while (rs.next()) {
+                    machineList.add(getMachineFromResultSet(rs));
+                }
             }
-
 
         } catch (Exception e) {
             logger.error("Exception lors du machineDao.findAll en bdd", e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return machineList;
     }
@@ -74,18 +77,22 @@ public final class MachineDAO implements MachineClient{
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs = stmt.executeQuery(FIND_BY_ID.replace("{}", id));
+                rs = stmt.executeQuery(FIND_BY_ID.replace("{}", id));
 
-            rs.next();
-            machine = getMachineFromResultSet(rs);
+                rs.next();
+                machine = getMachineFromResultSet(rs);
+            }
 
         } catch (Exception e) {
-            logger.error("Exception lors du userdto.findById("+id+") en bdd", e);
+            logger.error(String.format("Exception lors du userdto.findById(%s) en bdd", id),  e);
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return machine;
     }
@@ -97,26 +104,30 @@ public final class MachineDAO implements MachineClient{
         try {
             connection = DatabaseUrl.extract().getConnection();
 
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate(CREATE_TABLE);
+            ResultSet rs;
+            try (Statement stmt = connection.createStatement()) {
+                stmt.executeUpdate(CREATE_TABLE);
 
-            ResultSet rs =  stmt.executeQuery("INSERT INTO " + TABLE_NAME +
-                    " (" + NAME + ") " +
-                    "VALUES ('" + machine.getName() + "') RETURNING " + ID);
+                rs = stmt.executeQuery("INSERT INTO " + TABLE_NAME +
+                        " (" + NAME + ") " +
+                        "VALUES ('" + machine.getName() + "') RETURNING " + ID);
 
-            rs.next();
-            String id = rs.getString(ID);
+                rs.next();
+                String id = rs.getString(ID);
 
-            rs = stmt.executeQuery("SELECT * FROM "+TABLE_NAME+" WHERE " + ID + " ='" + id + "'");
+                rs = stmt.executeQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " ='" + id + "'");
 
-            rs.next();
-            machineCreated = getMachineFromResultSet(rs);
+                rs.next();
+                machineCreated = getMachineFromResultSet(rs);
+            }
 
         } catch (Exception e) {
             logger.error("Exception lors du machineDao.createMachine en bdd", e);
 
         } finally {
-            if (connection != null) try{connection.close();} catch(SQLException e){}
+            if (connection != null) try{connection.close();} catch(SQLException e){
+                logger.error("Exception lors de la cloture de la connexion", e);
+            }
         }
         return machineCreated;
     }

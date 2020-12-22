@@ -18,7 +18,6 @@ import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,8 @@ public class WeightServer {
     private static final Gson gson = new Gson();
     private static final Type WEIGHT_TYPE = Weight.class;
 
+    private WeightServer () {}
+
     public static void launchServer () {
 
         get("/weights/:userId", (req, res) -> {
@@ -46,12 +47,9 @@ public class WeightServer {
             Session session = req.session();
             String isConnected = session.attribute("CONNECTED");
             String userId = session.attribute("UserID");
-            System.out.println("isConnected : " + isConnected);
-
-            System.out.println("header list : "+req.headers());
 
             if ( "true".equals(isConnected) && userId.equals(userIdParam)) {
-                List<Weight> weightList = new ArrayList<>();
+                List<Weight> weightList;
 
                 User user = UserDAO.getInstance().findById(userIdParam);
                 List<Machine> machineList = MachineDAO.getInstance().findAll();
@@ -123,7 +121,7 @@ public class WeightServer {
             WeightDAO.getInstance().addWeight(weight, mass);
 
         } catch (NumberFormatException e) {
-            logger.error("Mass [" + request.params(":mass") + "] invalid", e);
+            logger.error(String.format("Mass [ %s ] invalid", request.params(":mass")), e);
             //TODO throw Content invalid
             halt("400");
         }
