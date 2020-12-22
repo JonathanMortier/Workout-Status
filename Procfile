@@ -1,1 +1,1 @@
-web:    java -Dserver.port=$PORT -cp target/classes:target/dependency/* Main
+web:    java -jar target/workout-status-1.0-SNAPSHOT-jar-with-dependencies.jar

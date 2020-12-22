@@ -1,7 +1,4 @@
-import static spark.Spark.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fr.djmojo.workout.database.MachineDAO;
 import fr.djmojo.workout.database.UserDAO;
 import fr.djmojo.workout.database.WeightDAO;
@@ -19,6 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static spark.Spark.get;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.staticFileLocation;
+
 /**
  * Created by DJMojo on 14/05/16.
  */
@@ -26,7 +28,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        port(Integer.valueOf(System.getProperty("server.port")));
+        port(Integer.valueOf(System.getenv("PORT")));
         staticFileLocation("/public");
 
         UserServer.launchServer();
