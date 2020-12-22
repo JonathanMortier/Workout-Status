@@ -3,7 +3,6 @@ package fr.djmojo.workout.database;
 import com.heroku.sdk.jdbc.DatabaseUrl;
 import feign.Param;
 import fr.djmojo.workout.clients.WeightClient;
-import fr.djmojo.workout.models.Machine;
 import fr.djmojo.workout.models.Weight;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

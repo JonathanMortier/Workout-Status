@@ -8,7 +8,6 @@ import spark.ModelAndView;
 import spark.Session;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import javax.servlet.http.Cookie;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
